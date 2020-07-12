@@ -5,8 +5,6 @@ using System.IO;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using BAL;
-using dBASE.NET;
-
 namespace EPFODataLoader_WebForm
 {
     public partial class _Default : Page
