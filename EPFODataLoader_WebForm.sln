@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPFODataLoader_WebForm", "EPFODataLoader_WebForm\EPFODataLoader_WebForm.csproj", "{46F94F12-FFA4-4ED4-BFA2-609B6454DEE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BAL", "BAL\BAL.csproj", "{EC2D1A64-1A9D-4AEB-B2AC-135DD9B30669}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{46F94F12-FFA4-4ED4-BFA2-609B6454DEE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46F94F12-FFA4-4ED4-BFA2-609B6454DEE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46F94F12-FFA4-4ED4-BFA2-609B6454DEE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46F94F12-FFA4-4ED4-BFA2-609B6454DEE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC2D1A64-1A9D-4AEB-B2AC-135DD9B30669}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC2D1A64-1A9D-4AEB-B2AC-135DD9B30669}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC2D1A64-1A9D-4AEB-B2AC-135DD9B30669}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC2D1A64-1A9D-4AEB-B2AC-135DD9B30669}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
