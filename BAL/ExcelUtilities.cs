@@ -1,6 +1,4 @@
 ﻿using System.Data;
-using System.Data.OleDb;
-using System.Web;
 using dBASE.NET;
 
 namespace BAL
