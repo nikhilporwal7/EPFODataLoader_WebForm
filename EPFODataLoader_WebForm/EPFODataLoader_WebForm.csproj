@@ -401,6 +401,9 @@
     <Folder Include="MyFolder\" />
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\BAL\BAL.csproj">
       <Project>{ec2d1a64-1a9d-4aeb-b2ac-135dd9b30669}</Project>
       <Name>BAL</Name>
