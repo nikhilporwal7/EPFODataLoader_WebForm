@@ -30,6 +30,7 @@ namespace EPFODataLoader_WebForm
             {
                 string ext = Path.GetExtension(FileUpload1.FileName).ToLower();
                 //getting the path of the file   
+                FileUpload1.SaveAs(Server.MapPath("~/MyFolder/" + FileUpload1.FileName));
                 string path = Server.MapPath("~/MyFolder/" + FileUpload1.FileName);
                 DataTable dt = new DataTable();
                 dt = ExcelUtilities.ReadDBFfile(path, monthIndex);
