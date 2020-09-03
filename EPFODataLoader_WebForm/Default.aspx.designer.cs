@@ -76,6 +76,15 @@ namespace EPFODataLoader_WebForm {
         protected global::System.Web.UI.WebControls.GridView gvExcelFile;
         
         /// <summary>
+        /// btn_Download control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btn_Download;
+        
+        /// <summary>
         /// FileUpLoadValidator control.
         /// </summary>
         /// <remarks>

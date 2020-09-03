@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Anon.cs" />
     <Compile Include="ExcelUtilities.cs" />
     <Compile Include="MonthOption.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
