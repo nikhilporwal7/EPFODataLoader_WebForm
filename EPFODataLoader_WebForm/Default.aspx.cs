@@ -23,12 +23,12 @@ namespace EPFODataLoader_WebForm
 
         protected void GreetBotton_Click(object sender, EventArgs e)
         {
-            HelloWorldLabel.Text = "Hello " + TextInput.Text;
+            HelloWorldLabel.Text = $"Hello {TextInput.Text}" ;
             TextInput.Text = string.Empty;
 
             if (FileUpload1.HasFile)
             {
-                string ext = Path.GetExtension(FileUpload1.FileName).ToLower();
+                var ext = Path.GetExtension(FileUpload1.FileName).ToLower();
                 //getting the path of the file   
                 FileUpload1.SaveAs(Server.MapPath("~/MyFolder/" + FileUpload1.FileName));
                 string path = Server.MapPath("~/MyFolder/" + FileUpload1.FileName);
@@ -39,7 +39,7 @@ namespace EPFODataLoader_WebForm
                 gvExcelFile.DataSource = dt;
                 gvExcelFile.DataBind();
 
-                Label1.Text = "File Uploaded: " + FileUpload1.FileName;
+                Label1.Text = $"File Uploaded: {FileUpload1.FileName}" ;
 
                 //ExcelUtilities.DumpDBFToTxt(dt, txtFilePath);
             }
@@ -51,7 +51,7 @@ namespace EPFODataLoader_WebForm
 
         protected void GreetList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            HelloWorldLabel.Text = "Hello " + Month.SelectedValue;
+            HelloWorldLabel.Text = $"Hello { Month.SelectedValue }";
             monthIndex = Month.SelectedIndex;
         }
     }
