@@ -28,14 +28,12 @@ namespace EPFODataLoader_WebForm
 
         protected void GreetBotton_Click(object sender, EventArgs e)
         {
-            HelloWorldLabel.Text = "Hello " + TextInput.Text;
+            HelloWorldLabel.Text = $"Hello {TextInput.Text}" ;
             TextInput.Text = string.Empty;
 
             if (FileUpload1.HasFile)
             {
-                string ext = Path.GetExtension(FileUpload1.FileName).ToLower();
-                fileName = FileUpload1.FileName;
-
+                var ext = Path.GetExtension(FileUpload1.FileName).ToLower();
                 //getting the path of the file   
                 FileUpload1.SaveAs(Server.MapPath("~/MyFolder/" + FileUpload1.FileName));
                 string path = Server.MapPath("~/MyFolder/" + FileUpload1.FileName);
@@ -47,13 +45,7 @@ namespace EPFODataLoader_WebForm
                 gvExcelFile.DataSource = dt;
                 gvExcelFile.DataBind();
 
-                Label1.Text = "File Uploaded: " + FileUpload1.FileName;
-            }
-            else
-            {
-                Label1.Text = "No File Uploaded.";
-            }
-        }
+                Label1.Text = $"File Uploaded: {FileUpload1.FileName}" ;
 
         /// <summary>
         /// Help link: //https://stackoverflow.com/a/25718674
@@ -95,7 +87,7 @@ namespace EPFODataLoader_WebForm
 
         protected void GreetList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            HelloWorldLabel.Text = "Hello " + Month.SelectedValue;
+            HelloWorldLabel.Text = $"Hello { Month.SelectedValue }";
             monthIndex = Month.SelectedIndex;
             monthIndex++;   //incrementing index by 1 as ddl list starts by index zero
         }
