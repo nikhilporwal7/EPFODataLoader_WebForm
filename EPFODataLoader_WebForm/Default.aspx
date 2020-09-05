@@ -45,6 +45,7 @@
                     <asp:BoundField HeaderText="LABEL" DataField="LABEL" />
                 </Columns>--%>
             </asp:GridView>
+            <asp:Button ID="btn_Download" runat="server" BackColor="#0033CC" Font-Bold="True" ForeColor="White" Text="Download" onclick="DownloadTxt" />
         </div>
         <div class="col-md-4">
             <h2>Web Hosting</h2>
