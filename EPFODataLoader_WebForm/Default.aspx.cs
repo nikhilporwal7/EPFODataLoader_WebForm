@@ -28,7 +28,7 @@ namespace EPFODataLoader_WebForm
 
         protected void GreetBotton_Click(object sender, EventArgs e)
         {
-            HelloWorldLabel.Text = $"Hello {TextInput.Text}" ;
+            HelloWorldLabel.Text = $"Hello {TextInput.Text}";
             TextInput.Text = string.Empty;
 
             if (FileUpload1.HasFile)
@@ -45,7 +45,9 @@ namespace EPFODataLoader_WebForm
                 gvExcelFile.DataSource = dt;
                 gvExcelFile.DataBind();
 
-                Label1.Text = $"File Uploaded: {FileUpload1.FileName}" ;
+                Label1.Text = $"File Uploaded: {FileUpload1.FileName}";
+            }
+        }
 
         /// <summary>
         /// Help link: //https://stackoverflow.com/a/25718674
@@ -68,7 +70,7 @@ namespace EPFODataLoader_WebForm
 
                 //DownloadTxt(fileName);
                 result = ExcelUtilities.DumpDBFToTxt(dt).ToString();
-                string txtFilePath = fileName.Replace("DBF", "txt");
+                string txtFilePath = monthIndex + "_" + fileName.Replace("DBF", "txt");
                 Response.Clear();
                 Response.AddHeader("content-disposition", "attachment; filename= ~/MyFolder/" + txtFilePath);
                 Response.AddHeader("content-type", "text/plain");
