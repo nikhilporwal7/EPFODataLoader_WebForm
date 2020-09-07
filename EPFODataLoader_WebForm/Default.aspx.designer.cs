@@ -13,31 +13,31 @@ namespace EPFODataLoader_WebForm {
     public partial class _Default {
         
         /// <summary>
-        /// HelloWorldLabel control.
+        /// helloWorldLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label HelloWorldLabel;
+        protected global::System.Web.UI.WebControls.Label helloWorldLabel;
         
         /// <summary>
-        /// TextInput control.
+        /// txtInput control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextInput;
+        protected global::System.Web.UI.WebControls.TextBox txtInput;
         
         /// <summary>
-        /// GreetButton control.
+        /// greetButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button GreetButton;
+        protected global::System.Web.UI.WebControls.Button greetButton;
         
         /// <summary>
         /// FileUpload1 control.

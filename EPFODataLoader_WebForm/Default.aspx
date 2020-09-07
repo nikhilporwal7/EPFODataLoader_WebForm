@@ -4,9 +4,9 @@
 
     <div class="jumbotron" style="overflow: scroll">
         <h1>Display Uploaded data</h1>
-        <asp:Label runat="server" ID="HelloWorldLabel"></asp:Label>
-        <asp:TextBox ID="TextInput" runat="server"></asp:TextBox>
-        <asp:Button ID="GreetButton" runat="server" OnClick="GreetBotton_Click" Text="Submit" class="btn btn-primary btn-lg" Width="123px" />
+        <asp:Label runat="server" ID="helloWorldLabel"></asp:Label>
+        <asp:TextBox ID="txtInput" runat="server"></asp:TextBox>
+        <asp:Button ID="greetButton" runat="server" OnClick="GreetBotton_Click" Text="Submit" class="btn btn-primary btn-lg" Width="123px" />
         <h2>Select DBF File</h2>
         <asp:FileUpload ID="FileUpload1" runat="server" Width="138px" />
         <asp:Label ID="Label1" runat="server"></asp:Label>
