@@ -13,31 +13,31 @@ namespace EPFODataLoader_WebForm {
     public partial class _Default {
         
         /// <summary>
-        /// HelloWorldLabel control.
+        /// helloWorldLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label HelloWorldLabel;
+        protected global::System.Web.UI.WebControls.Label helloWorldLabel;
         
         /// <summary>
-        /// TextInput control.
+        /// txtInput control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextInput;
+        protected global::System.Web.UI.WebControls.TextBox txtInput;
         
         /// <summary>
-        /// GreetBotton control.
+        /// greetButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button GreetBotton;
+        protected global::System.Web.UI.WebControls.Button greetButton;
         
         /// <summary>
         /// FileUpload1 control.
@@ -58,15 +58,6 @@ namespace EPFODataLoader_WebForm {
         protected global::System.Web.UI.WebControls.Label Label1;
         
         /// <summary>
-        /// Month control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList Month;
-        
-        /// <summary>
         /// gvExcelFile control.
         /// </summary>
         /// <remarks>
@@ -83,6 +74,15 @@ namespace EPFODataLoader_WebForm {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btn_Download;
+        
+        /// <summary>
+        /// Month control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList Month;
         
         /// <summary>
         /// FileUpLoadValidator control.

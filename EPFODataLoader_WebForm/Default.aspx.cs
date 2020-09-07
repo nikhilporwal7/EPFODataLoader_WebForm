@@ -14,10 +14,11 @@ namespace EPFODataLoader_WebForm
         DataTable dt = new DataTable();
         string fileName = string.Empty;
         string result = string.Empty;
+        string serverStorageLocatn = "~/MyFolder/";
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            HelloWorldLabel.Text = "Hello ";
+            helloWorldLabel.Text = "Hello ";
 
             foreach (BAL.MonthOption mo in Enum.GetValues(typeof(BAL.MonthOption)))
             {
@@ -28,15 +29,15 @@ namespace EPFODataLoader_WebForm
 
         protected void GreetBotton_Click(object sender, EventArgs e)
         {
-            HelloWorldLabel.Text = $"Hello {TextInput.Text}" ;
-            TextInput.Text = string.Empty;
+            helloWorldLabel.Text += txtInput.Text;
+            txtInput.Text = string.Empty;
 
             if (FileUpload1.HasFile)
             {
                 var ext = Path.GetExtension(FileUpload1.FileName).ToLower();
                 //getting the path of the file   
-                FileUpload1.SaveAs(Server.MapPath("~/MyFolder/" + FileUpload1.FileName));
-                string path = Server.MapPath("~/MyFolder/" + FileUpload1.FileName);
+                FileUpload1.SaveAs(Server.MapPath(serverStorageLocatn + FileUpload1.FileName));
+                string path = Server.MapPath(serverStorageLocatn + FileUpload1.FileName);
 
                 //DataTable dt = new DataTable();
                 dt = ExcelUtilities.ReadDBFfile(path, monthIndex);
@@ -45,7 +46,9 @@ namespace EPFODataLoader_WebForm
                 gvExcelFile.DataSource = dt;
                 gvExcelFile.DataBind();
 
-                Label1.Text = $"File Uploaded: {FileUpload1.FileName}" ;
+                Label1.Text = $"File Uploaded: {FileUpload1.FileName}";
+            }
+        }
 
         /// <summary>
         /// Help link: //https://stackoverflow.com/a/25718674
@@ -60,17 +63,17 @@ namespace EPFODataLoader_WebForm
                 fileName = FileUpload1.FileName;
 
                 //getting the path of the file   
-                FileUpload1.SaveAs(Server.MapPath("~/MyFolder/" + FileUpload1.FileName));
-                string path = Server.MapPath("~/MyFolder/" + FileUpload1.FileName);
+                FileUpload1.SaveAs(Server.MapPath(serverStorageLocatn + FileUpload1.FileName));
+                string path = Server.MapPath(serverStorageLocatn + FileUpload1.FileName);
 
                 //DataTable dt = new DataTable();
                 dt = ExcelUtilities.ReadDBFfile(path, monthIndex);
 
                 //DownloadTxt(fileName);
                 result = ExcelUtilities.DumpDBFToTxt(dt).ToString();
-                string txtFilePath = fileName.Replace("DBF", "txt");
+                string txtFilePath = monthIndex + "_" + fileName.Replace("DBF", "txt");
                 Response.Clear();
-                Response.AddHeader("content-disposition", "attachment; filename= ~/MyFolder/" + txtFilePath);
+                Response.AddHeader("content-disposition", "attachment; filename="+ serverStorageLocatn + txtFilePath);
                 Response.AddHeader("content-type", "text/plain");
 
                 using (StreamWriter writer = new StreamWriter(Response.OutputStream))
@@ -87,7 +90,7 @@ namespace EPFODataLoader_WebForm
 
         protected void GreetList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            HelloWorldLabel.Text = $"Hello { Month.SelectedValue }";
+            helloWorldLabel.Text = $"Hello { Month.SelectedValue }";
             monthIndex = Month.SelectedIndex;
             monthIndex++;   //incrementing index by 1 as ddl list starts by index zero
         }

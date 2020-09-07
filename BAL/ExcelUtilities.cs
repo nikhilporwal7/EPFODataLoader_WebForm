@@ -33,25 +33,42 @@ namespace BAL
             // Clean
             dbf = null;
 
-            //filter the datafrom row in myDTable.AsEnumerable()
-            string EMP_UAN = string.Empty;
-            string EMP_NAME = string.Empty;
-
             //var dt2 = new DataTable();
-            
+
+            //converting index value to string for some column to get month in spell
+            MonthOption month = (MonthOption)monthIndex;
+            string pf = "PF" + monthIndex;
+            string monthValue = month.ToString();
+            string eePercent = monthValue.Substring(0, 3) + "EE";
+            string erPercent = monthValue.Substring(0, 3) + "ER";
             //SHOULD  I make a concrete class for this
             var res = from myRow in dt.AsEnumerable()
-                      where myRow.Field<string>("WAGE"+ monthIndex.ToString() ) != null
+                      where myRow.Field<string>("WAGE" + monthIndex.ToString()) != null
                       select new Anon
                       {
                           EMP_UAN = myRow.Field<string>("EMP_UAN"),
                           EMP_NAME = myRow.Field<string>("EMP_NAME"),
-                          EMP_WAGE = Convert.ToInt32(myRow.Field<string>("WAGE" + monthIndex.ToString()))
+                          EMP_WAGE = Convert.ToInt32(myRow.Field<string>("WAGE" + monthIndex.ToString())),
+                          EMP_WAGE2 = Convert.ToInt32(myRow.Field<string>("WAGE" + monthIndex.ToString())),
+                          EMP_WAGE3 = Convert.ToInt32(myRow.Field<string>("WAGE" + monthIndex.ToString())),
+                          EMP_WAGE4 = Convert.ToInt32(myRow.Field<string>("WAGE" + monthIndex.ToString())),
+                          EE_Percent = Convert.ToInt32(myRow.Field<string>(eePercent)),
+                          PF = Convert.ToInt32(myRow.Field<string>(pf)),
+                          ER_Percent = Convert.ToInt32(myRow.Field<string>(erPercent))
                       };
             dt = new DataTable();
             dt.Columns.Add("EMP_UAN");
             dt.Columns.Add("EMP_NAME");
             dt.Columns.Add("WAGE" + monthIndex.ToString());
+            dt.Columns.Add("WAGE" + monthIndex.ToString() + 1);
+            dt.Columns.Add("WAGE" + monthIndex.ToString() + 2);
+            dt.Columns.Add("WAGE" + monthIndex.ToString() + 3);
+            dt.Columns.Add("EEPer" + monthIndex.ToString());
+            dt.Columns.Add(pf);
+            dt.Columns.Add("ERPer" + monthIndex.ToString());
+            dt.Columns.Add("NCPDays");
+            dt.Columns.Add("Totaldays");
+
             foreach (var item in res)
             {
                 DataRow row = dt.NewRow();
@@ -61,11 +78,19 @@ namespace BAL
                     row[columnName: "EMP_UAN"] = item.EMP_UAN;
                     row[columnName: "EMP_NAME"] = item.EMP_NAME;
                     row[columnName: "WAGE" + monthIndex.ToString()] = item.EMP_WAGE;
+                    row[columnName: "WAGE" + monthIndex.ToString() + 1] = item.EMP_WAGE2;
+                    row[columnName: "WAGE" + monthIndex.ToString() + 2] = item.EMP_WAGE3;
+                    row[columnName: "WAGE" + monthIndex.ToString() + 3] = item.EMP_WAGE4;
+                    row[columnName: "EEPer" + monthIndex.ToString()] = item.EE_Percent;
+                    row[columnName: pf] = item.PF;
+                    row[columnName: "ERPer" + monthIndex.ToString()] = item.ER_Percent;
+                    row[columnName: "NCPdays"] = 0;
+                    row[columnName: "Totaldays"] = 0;
                 }
 
                 dt.Rows.Add(row);
             }
-            
+
             return dt;
         }
 
@@ -82,24 +107,17 @@ namespace BAL
                 result.Append(dt.Columns[i].ColumnName);
                 result.Append(i == dt.Columns.Count - 1 ? "\n" : "#~#");
             }
-            result.Append(Environment.NewLine);
+            //result.Append(Environment.NewLine);
 
             foreach (DataRow row in dt.Rows)
             {
                 for (int i = 0; i < dt.Columns.Count; i++)
                 {
-                    //if (row[3].ToString() == "0.00")
-                    //{
-                    //    //do nothing;
-                    //}
-                    //else
-                    //{
-                        string temp = row[i].ToString().Trim();
-                        temp = temp.Contains(".") ? temp.TrimEnd('0').TrimEnd('.') : temp;
-                        result.Append(temp);
+                    string temp = row[i].ToString().Trim();
+                    temp = temp.Contains(".") ? temp.TrimEnd('0').TrimEnd('.') : temp;
+                    result.Append(temp);
 
-                        result.Append(i == dt.Columns.Count - 1 ? Environment.NewLine : "#~#");        //https://stackoverflow.com/questions/2617752/newline-character-in-stringbuilder
-                    //}
+                    result.Append(i == dt.Columns.Count - 1 ? Environment.NewLine : "#~#");        //https://stackoverflow.com/questions/2617752/newline-character-in-stringbuilder
                 }
                 //result.Append(Environment.NewLine);
             }
