@@ -92,7 +92,7 @@ namespace EPFODataLoader_WebForm
         {
             helloWorldLabel.Text = $"Hello { Month.SelectedValue }";
             monthIndex = Month.SelectedIndex;
-            monthIndex++;   //incrementing index by 1 as ddl list starts by index zero
+            monthIndex +=2;   //incrementing index by 1 as ddl list starts by index zero
         }
     }
 }
