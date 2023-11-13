@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -127,28 +124,43 @@ namespace EPFODataLoader_WebForm
         protected void btnGenerate_Click(object sender, EventArgs e)
         {
             DataTable dtCurrentTable = (DataTable)ViewState["CurrentTable"];
-            if (dtCurrentTable.Rows.Count > 0)
+
+            //Validate the data
+            bool validGridData = ValidateGridData(dtCurrentTable);
+
+            if (!validGridData)
+            {
+                Response.Write("Please enter data to generate text file.");
+            }
+            else
             {
                 result = DumpDataTableToTxt(dtCurrentTable).ToString();
 
+                //remove the ending newline character
+                if (result.EndsWith(Environment.NewLine))
+                {
+                    result = result.Substring(0, result.Length - Environment.NewLine.Length);
+                }
 
-                string txtFilePath = "abc.txt"; 
+                fileName = GetFileName(dtCurrentTable.Rows.Count);
                 Response.Clear();
-                Response.AddHeader("content-disposition", "attachment; filename=" + txtFilePath);
+                Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
                 Response.AddHeader("content-type", "text/plain");
 
                 using (StreamWriter writer = new StreamWriter(Response.OutputStream))
                 {
-                    writer.WriteLine(result);
+                    writer.Write(result);
                 }
                 Response.End();
             }
-            else
-            {
-                Response.Write("Please enter data to generate text file.");
-            }
         }
 
+        //calculate the 3 amounts  
+        //calculate PF -12%
+        //calculate 8.33%
+
+
+        #region PrivateMethods
         /// <summary>
         /// src: https://stackoverflow.com/questions/4959722/c-sharp-datatable-to-csv
         /// </summary>
@@ -178,11 +190,15 @@ namespace EPFODataLoader_WebForm
                     {
                         temp = row[i].ToString();
                     }
-                    else if(i == 3 || i == 4 || i== 5) //wages2, wages3, wages4
+                    else if (i == 3 || i == 4 || i == 5) //wages2, wages3, wages4
                     {
                         temp = row[2].ToString();
+
+                        //future implementations
+                        //i=4 EPS is zero if pension is not there or age > 60
+                        //i=5 max EDLI amount is 15k
                     }
-                    else if(i == 6) //12%
+                    else if (i == 6) //12%
                     {
                         var wages = Convert.ToInt32(row[2]);
                         var calc = (int)Math.Round((double)wages * 12 / 100, 0);
@@ -200,7 +216,7 @@ namespace EPFODataLoader_WebForm
                         var calc = (int)Math.Round((double)wages * 12 / 100, 0) - (int)Math.Round((double)wages * 8.33 / 100, 0);
                         temp = calc.ToString();
                     }
-                    else if (i==9 || i == 10)
+                    else if (i == 9 || i == 10)
                     {
                         temp = "0";
                     }
@@ -214,11 +230,21 @@ namespace EPFODataLoader_WebForm
             //File.WriteAllText(csvFile, result.ToString());
         }
 
-        //calculate the 3 amounts  
-        //calculate PF -12%
-        //calculate 8.33%
-        //
+        private string GetFileName(int countofEmp)
+        {
+            return countofEmp + "Emp" + "_" + DateTime.Now.Date.ToShortDateString() + ".txt";
+        }
 
+        private bool ValidateGridData(DataTable dtCurrentTable)
+        {
+            if (dtCurrentTable.Rows[0].ItemArray[0].Equals(result))
+                return false;
 
+            if (dtCurrentTable.Rows.Count == 1)        //sending empty form data //to be changed once model-view is binded
+                return false;
+
+            return true;
+        }
+        #endregion
     }
 }
