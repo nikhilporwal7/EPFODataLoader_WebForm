@@ -11,14 +11,14 @@ namespace EPFODataLoader_WebForm
     {
         string fileName = string.Empty;
         string result = string.Empty;
-        bool isHigherWageSupported = false;
+        bool isHigherWageLimited = false;
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
                 SetInitialRow();
             }
-            isHigherWageSupported = chkToggleHigherWages.Checked;
+            isHigherWageLimited = chkToggleHigherWages.Checked;
         }
 
         private void SetInitialRow()
@@ -136,7 +136,7 @@ namespace EPFODataLoader_WebForm
             }
             else
             {
-                result = DumpDataTableToTxt(dtCurrentTable, isHigherWageSupported).ToString();
+                result = DumpDataTableToTxt(dtCurrentTable, isHigherWageLimited).ToString();
 
                 //remove the ending newline character
                 if (result.EndsWith(Environment.NewLine))
@@ -168,7 +168,7 @@ namespace EPFODataLoader_WebForm
         /// </summary>
         /// <param name="dt"></param>
         /// <param name="csvFile"></param>
-        private static StringBuilder DumpDataTableToTxt(DataTable dt, bool isHigherWageSupported)
+        private static StringBuilder DumpDataTableToTxt(DataTable dt, bool isHigherWageLimited)
         {
             var result = new StringBuilder();
 
@@ -191,15 +191,24 @@ namespace EPFODataLoader_WebForm
                 {
                     string temp = string.Empty;
                     
-                    if (i < 3)
+                    if (i < 3)   //i == 2 //Gross Wages Wages1
                     {
                         temp = row[i].ToString();
                     }
                     else if (i == 3 || i == 4) //wages2, wages3
                     {
-                        temp = row[2].ToString();
-                        Wages = Convert.ToInt32(temp);
-
+                        if (isHigherWageLimited)
+                        {
+                            temp = row[2].ToString();
+                            Wages = Convert.ToInt32(temp) > 15000 ? 15000 : Convert.ToInt32(temp);
+                            temp = Wages.ToString();
+                        }
+                        else
+                        {
+                            temp = row[2].ToString();
+                            Wages = Convert.ToInt32(temp);
+                        }
+                       
                         //future implementations
                         //i=4 EPS is zero if pension is not there or age > 60
                     }
