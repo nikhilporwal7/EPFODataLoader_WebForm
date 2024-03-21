@@ -11,12 +11,14 @@ namespace EPFODataLoader_WebForm
     {
         string fileName = string.Empty;
         string result = string.Empty;
+        bool isHigherWageSupported = false;
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
                 SetInitialRow();
             }
+            isHigherWageSupported = chkToggleHigherWages.Checked;
         }
 
         private void SetInitialRow()
@@ -134,7 +136,7 @@ namespace EPFODataLoader_WebForm
             }
             else
             {
-                result = DumpDataTableToTxt(dtCurrentTable).ToString();
+                result = DumpDataTableToTxt(dtCurrentTable, isHigherWageSupported).ToString();
 
                 //remove the ending newline character
                 if (result.EndsWith(Environment.NewLine))
@@ -166,7 +168,7 @@ namespace EPFODataLoader_WebForm
         /// </summary>
         /// <param name="dt"></param>
         /// <param name="csvFile"></param>
-        private static StringBuilder DumpDataTableToTxt(DataTable dt)
+        private static StringBuilder DumpDataTableToTxt(DataTable dt, bool isHigherWageSupported)
         {
             var result = new StringBuilder();
 
@@ -183,37 +185,42 @@ namespace EPFODataLoader_WebForm
 
             foreach (DataRow row in dt.Rows)
             {
+                int Wages = 0;
+                int EDLIWages = 0;
                 for (int i = 0; i < dt.Columns.Count; i++)
                 {
                     string temp = string.Empty;
+                    
                     if (i < 3)
                     {
                         temp = row[i].ToString();
                     }
-                    else if (i == 3 || i == 4 || i == 5) //wages2, wages3, wages4
+                    else if (i == 3 || i == 4) //wages2, wages3
                     {
                         temp = row[2].ToString();
+                        Wages = Convert.ToInt32(temp);
 
                         //future implementations
                         //i=4 EPS is zero if pension is not there or age > 60
-                        //i=5 max EDLI amount is 15k
+                    }
+                    else if (i == 5) //EDLI Wages  //i=5 max EDLI amount is 15k
+                    {
+                        EDLIWages = Wages > 15000 ? 15000 : Wages;
+                        temp = EDLIWages.ToString();
                     }
                     else if (i == 6) //12%
                     {
-                        var wages = Convert.ToInt32(row[2]);
-                        var calc = (int)Math.Round((double)wages * 12 / 100, 0);
+                        var calc = (int)Math.Round((double)Wages * 12 / 100, 0);
                         temp = calc.ToString();
                     }
                     else if (i == 7) //8.33%
                     {
-                        var wages = Convert.ToInt32(row[2]);
-                        var calc = (int)Math.Round((double)wages * 8.33 / 100, 0);
+                        var calc = (int)Math.Round(EDLIWages * 8.33 / 100, 0);
                         temp = calc.ToString();
                     }
                     else if (i == 8) //3.67%
                     {
-                        var wages = Convert.ToInt32(row[2]);
-                        var calc = (int)Math.Round((double)wages * 12 / 100, 0) - (int)Math.Round((double)wages * 8.33 / 100, 0);
+                        var calc = (int)Math.Round((double)Wages * 12 / 100, 0) - (int)Math.Round((double)EDLIWages * 8.33 / 100, 0);
                         temp = calc.ToString();
                     }
                     else if (i == 9 || i == 10)
