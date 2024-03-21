@@ -3,6 +3,8 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <h2><%: Title %>.</h2>
     <h3>Enter the data here to Generate Adhoc Challans</h3>
+    <%-- Add a checkbox here to handle 15k above scenario --%>
+    <asp:CheckBox ID="chkToggleHigherWages" Text="Support Wages > 15K"  runat="server"/>
     <asp:GridView ID="EmployeeEntryGrid" runat="server" AutoGenerateColumns="False" Width="100%" ViewStateMode="Enabled" ShowFooter="true">
         <Columns>
             <asp:TemplateField HeaderText="UAN Number">
