@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Ajax.Utilities;
 
 namespace EPFODataLoader_WebForm
 {
@@ -29,12 +30,14 @@ namespace EPFODataLoader_WebForm
             dt.Columns.Add(new DataColumn("Column1", typeof(string)));
             dt.Columns.Add(new DataColumn("Column2", typeof(string)));
             dt.Columns.Add(new DataColumn("Column3", typeof(string)));
+            dt.Columns.Add(new DataColumn("NCP_Days", typeof(string)));
 
             dr = dt.NewRow();
 
             dr["Column1"] = string.Empty;
             dr["Column2"] = string.Empty;
             dr["Column3"] = string.Empty;
+            dr["NCP_Days"] = string.Empty;
             dt.Rows.Add(dr);
 
             ViewState["CurrentTable"] = dt;
@@ -67,6 +70,8 @@ namespace EPFODataLoader_WebForm
 
                         TextBox box3 = (TextBox)EmployeeEntryGrid.Rows[rowIndex].Cells[2].FindControl("txtEmp_EPFWage");
 
+                        TextBox box4 = (TextBox)EmployeeEntryGrid.Rows[rowIndex].Cells[3].FindControl("txtNCP_Days");
+
                         drCurrentRow = dtCurrentTable.NewRow();
 
                         //drCurrentRow["RowNumber"] = i + 1;
@@ -74,6 +79,7 @@ namespace EPFODataLoader_WebForm
                         dtCurrentTable.Rows[i - 1]["Column1"] = box1.Text;
                         dtCurrentTable.Rows[i - 1]["Column2"] = box2.Text;
                         dtCurrentTable.Rows[i - 1]["Column3"] = box3.Text;
+                        dtCurrentTable.Rows[i - 1]["NCP_Days"] = box4.Text;
                         rowIndex++;
                     }
                     dtCurrentTable.Rows.Add(drCurrentRow);
@@ -89,7 +95,6 @@ namespace EPFODataLoader_WebForm
             }
 
             //Set Previous Data on Postbacks
-
             SetPreviousData();
         }
 
@@ -109,10 +114,12 @@ namespace EPFODataLoader_WebForm
                         TextBox box1 = (TextBox)EmployeeEntryGrid.Rows[rowIndex].Cells[0].FindControl("txtUAN_No");
                         TextBox box2 = (TextBox)EmployeeEntryGrid.Rows[rowIndex].Cells[1].FindControl("txtEmp_Name");
                         TextBox box3 = (TextBox)EmployeeEntryGrid.Rows[rowIndex].Cells[2].FindControl("txtEmp_EPFWage");
+                        TextBox box4 = (TextBox)EmployeeEntryGrid.Rows[rowIndex].Cells[3].FindControl("txtNCP_Days");
 
                         box1.Text = dtCurrentTable.Rows[i]["Column1"].ToString();
                         box2.Text = dtCurrentTable.Rows[i]["Column2"].ToString();
                         box3.Text = dtCurrentTable.Rows[i]["Column3"].ToString();
+                        box4.Text = dtCurrentTable.Rows[i]["NCP_Days"].ToString();
                         rowIndex++;
                     }
                 }
@@ -180,8 +187,8 @@ namespace EPFODataLoader_WebForm
             dt.Columns.Add("12_Per");
             dt.Columns.Add("8_33");
             dt.Columns.Add("3_67");
-            dt.Columns.Add("NCPDays");
-            dt.Columns.Add("Totaldays");
+            //dt.Columns.Add("NCPDays"); //shifted to UI
+            dt.Columns.Add("REFUND_OF_ADVANCES");
 
             foreach (DataRow row in dt.Rows)
             {
@@ -199,7 +206,7 @@ namespace EPFODataLoader_WebForm
                     {
                         if (isHigherWageLimited)
                         {
-                            temp = row[2].ToString();
+                            temp = row[2].ToString();      //rename this to row["Column3"]
                             Wages = Convert.ToInt32(temp) > 15000 ? 15000 : Convert.ToInt32(temp);
                             temp = Wages.ToString();
                         }
@@ -232,7 +239,11 @@ namespace EPFODataLoader_WebForm
                         var calc = (int)Math.Round((double)Wages * 12 / 100, 0) - (int)Math.Round((double)EDLIWages * 8.33 / 100, 0);
                         temp = calc.ToString();
                     }
-                    else if (i == 9 || i == 10)
+                    else if (i == 9)   //NCP days
+                    {
+                        temp = row["NCP_Days"].ToString().IsNullOrWhiteSpace() ? "0" : row["NCP_Days"].ToString();
+                    }
+                    else if (i == 10)
                     {
                         temp = "0";
                     }
@@ -263,4 +274,6 @@ namespace EPFODataLoader_WebForm
         }
         #endregion
     }
+
+    //Add client Validation that NCP days are never more than 27 days
 }
