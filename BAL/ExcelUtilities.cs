@@ -163,7 +163,7 @@ namespace BAL
 
                     if (i < 3)   //i == 2 //Gross Wages Wages1
                     {
-                        temp = row[i].ToString();
+                        temp = row[i].ToString().Trim();
                     }
                     else if (i == 3 || i == 4) //wages2, wages3
                     {
