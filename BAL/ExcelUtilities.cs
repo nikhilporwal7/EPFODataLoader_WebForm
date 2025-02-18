@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Text;
 using dBASE.NET;
 
@@ -142,6 +143,10 @@ namespace BAL
 
         public static StringBuilder ReadCSVFile(DataTable dt, bool isHigherWageLimited = false)
         {
+            //check and remove empty row from DataTable when sometimes CSV mistakes empty cursor on a row as data
+            dt = ValidateAndFixDataTable(dt);
+
+
             var result = new StringBuilder();
 
             dt.Columns.Add("Wages2");
@@ -219,6 +224,59 @@ namespace BAL
             return result;
             //File.WriteAllText(csvFile, result.ToString());
             // }
+        }
+
+        private static DataTable ValidateAndFixDataTable(DataTable dt)
+        {
+            dt = FixDataRows(dt);
+
+            if (dt.Columns.Count > 4)
+                dt = FixDataColumns(dt);
+
+            return dt;
+        }
+
+        private static DataTable FixDataColumns(DataTable dt)
+        {
+            return RemoveEmptyColumns(dt);
+        }
+
+        private static DataTable FixDataRows(DataTable dt)
+        {
+            return dt.Rows
+                    .Cast<DataRow>()
+                    .Where(row => !row.ItemArray.All(field => field is DBNull ||
+                                                     string.IsNullOrWhiteSpace(field as string)))
+                    .CopyToDataTable();
+        }
+
+        public static DataTable RemoveEmptyColumns(DataTable table)
+        {
+            //for (int colIndex = table.Columns.Count - 1; colIndex >= 0; colIndex--)
+            //{
+            //    DataColumn column = table.Columns[colIndex];
+            //    bool isEmpty = true;
+            //    foreach (DataRow row in table.Rows)
+            //    {
+            //        if (!row.IsNull(colIndex) && !string.IsNullOrEmpty(row[colIndex].ToString()))
+            //        {
+            //            isEmpty = false;
+            //            break;
+            //        }
+            //    }
+            //    if (isEmpty)
+            //    {
+            //        table.Columns.Remove(column);
+            //    }
+            //}
+
+            // https://stackoverflow.com/questions/1766902/remove-all-columns-with-no-data-from-datatable
+            foreach (var column in table.Columns.Cast<DataColumn>().ToArray())
+            {
+                if (table.AsEnumerable().All(dr => dr.IsNull(column) || string.IsNullOrWhiteSpace(dr[column] as string)))
+                    table.Columns.Remove(column);
+            }
+            return table;
         }
     }
 
