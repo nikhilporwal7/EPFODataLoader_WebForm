@@ -143,87 +143,96 @@ namespace BAL
 
         public static StringBuilder ReadCSVFile(DataTable dt, bool isHigherWageLimited = false)
         {
-            //check and remove empty row from DataTable when sometimes CSV mistakes empty cursor on a row as data
-            dt = ValidateAndFixDataTable(dt);
-
-
-            var result = new StringBuilder();
-
-            dt.Columns.Add("Wages2");
-            dt.Columns.Add("Wages3");
-            dt.Columns.Add("Wages4");
-            dt.Columns.Add("12_Per");
-            dt.Columns.Add("8_33");
-            dt.Columns.Add("3_67");
-            //dt.Columns.Add("NCPDays"); //shifted to UI
-            dt.Columns.Add("REFUND_OF_ADVANCES");
-
-            foreach (DataRow row in dt.Rows)
+            try
             {
-                int Wages = 0;
-                int EDLIWages = 0;
-                for (int i = 0; i < dt.Columns.Count; i++)
+                //check and remove empty row from DataTable when sometimes CSV mistakes empty cursor on a row as data
+                dt = ValidateAndFixDataTable(dt);
+
+                var result = new StringBuilder();
+
+                dt.Columns.Add("Wages2");
+                dt.Columns.Add("Wages3");
+                dt.Columns.Add("Wages4");
+                dt.Columns.Add("12_Per");
+                dt.Columns.Add("8_33");
+                dt.Columns.Add("3_67");
+                //dt.Columns.Add("NCPDays"); //shifted to UI
+                dt.Columns.Add("REFUND_OF_ADVANCES");
+
+                foreach (DataRow row in dt.Rows)
                 {
-                    string temp = string.Empty;
+                    int Wages = 0;
+                    int EDLIWages = 0;
+                    for (int i = 0; i < dt.Columns.Count; i++)
+                    {
+                        string temp = string.Empty;
 
-                    if (i < 3)   //i == 2 //Gross Wages Wages1
-                    {
-                        temp = row[i].ToString().Trim();
-                    }
-                    else if (i == 3 || i == 4) //wages2, wages3
-                    {
-                        if (isHigherWageLimited)
+                        if (i < 3)   //i == 2 //Gross Wages Wages1
                         {
-                            temp = row[2].ToString();      //rename this to row["Column3"]
-                            Wages = Convert.ToInt32(temp) > 15000 ? 15000 : Convert.ToInt32(temp);
-                            temp = Wages.ToString();
+                            temp = row[i].ToString().Trim();
                         }
-                        else
+                        else if (i == 3 || i == 4) //wages2, wages3
                         {
-                            temp = row[2].ToString();
-                            Wages = Convert.ToInt32(temp);
+                            if (isHigherWageLimited)
+                            {
+                                temp = row[2].ToString();      //rename this to row["Column3"]
+                                Wages = Convert.ToInt32(temp) > 15000 ? 15000 : Convert.ToInt32(temp);
+                                temp = Wages.ToString();
+                            }
+                            else
+                            {
+                                temp = row[2].ToString();
+                                Wages = Convert.ToInt32(temp);
+                            }
+
+                            //future implementations
+                            //i=4 EPS is zero if pension is not there or age > 60
+                        }
+                        else if (i == 5) //EDLI Wages  //i=5 max EDLI amount is 15k
+                        {
+                            EDLIWages = Wages > 15000 ? 15000 : Wages;
+                            temp = EDLIWages.ToString();
+                        }
+                        else if (i == 6) //12%
+                        {
+                            var calc = (int)Math.Round((double)Wages * 12 / 100, 0);
+                            temp = calc.ToString();
+                        }
+                        else if (i == 7) //8.33%
+                        {
+                            var calc = (int)Math.Round(EDLIWages * 8.33 / 100, 0);
+                            temp = calc.ToString();
+                        }
+                        else if (i == 8) //3.67%
+                        {
+                            var calc = (int)Math.Round((double)Wages * 12 / 100, 0) - (int)Math.Round((double)EDLIWages * 8.33 / 100, 0);
+                            temp = calc.ToString();
+                        }
+                        else if (i == 9)   //NCP days
+                        {
+                            temp = row[3].ToString() == null ? "0" : row[3].ToString();
+                        }
+                        else if (i == 10)
+                        {
+                            temp = "0";
                         }
 
-                        //future implementations
-                        //i=4 EPS is zero if pension is not there or age > 60
+                        result.Append(temp);
+                        result.Append(i == dt.Columns.Count - 1 ? Environment.NewLine : "#~#");        //https://stackoverflow.com/questions/2617752/newline-character-in-stringbuilder
                     }
-                    else if (i == 5) //EDLI Wages  //i=5 max EDLI amount is 15k
-                    {
-                        EDLIWages = Wages > 15000 ? 15000 : Wages;
-                        temp = EDLIWages.ToString();
-                    }
-                    else if (i == 6) //12%
-                    {
-                        var calc = (int)Math.Round((double)Wages * 12 / 100, 0);
-                        temp = calc.ToString();
-                    }
-                    else if (i == 7) //8.33%
-                    {
-                        var calc = (int)Math.Round(EDLIWages * 8.33 / 100, 0);
-                        temp = calc.ToString();
-                    }
-                    else if (i == 8) //3.67%
-                    {
-                        var calc = (int)Math.Round((double)Wages * 12 / 100, 0) - (int)Math.Round((double)EDLIWages * 8.33 / 100, 0);
-                        temp = calc.ToString();
-                    }
-                    else if (i == 9)   //NCP days
-                    {
-                        temp = row[3].ToString() == null ? "0" : row[3].ToString();
-                    }
-                    else if (i == 10)
-                    {
-                        temp = "0";
-                    }
-
-                    result.Append(temp);
-                    result.Append(i == dt.Columns.Count - 1 ? Environment.NewLine : "#~#");        //https://stackoverflow.com/questions/2617752/newline-character-in-stringbuilder
+                    //result.Append(Environment.NewLine);
                 }
-                //result.Append(Environment.NewLine);
+                return result;
+                //File.WriteAllText(csvFile, result.ToString());
             }
-            return result;
-            //File.WriteAllText(csvFile, result.ToString());
-            // }
+            catch (Exception ex)
+            {
+                StringBuilder resultEx = new StringBuilder();
+                resultEx.AppendLine("Text file cannot be created due to some invalid data in CSV.");
+                resultEx.AppendLine("Please check the file you are uploading again.");
+                resultEx.AppendLine($"Server Error For developer: {ex.Message}");
+                return resultEx;
+            }
         }
 
         private static DataTable ValidateAndFixDataTable(DataTable dt)
