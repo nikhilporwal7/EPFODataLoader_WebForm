@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -141,10 +142,16 @@ namespace BAL
         }
 
 
-        public static StringBuilder ReadCSVFile(DataTable dt, bool isHigherWageLimited = false)
+        public static StringBuilder ReadCSVFile(DataTable dt, bool isHigherWageLimited = false, bool isAge58Above = false, string path = "")
         {
             try
             {
+                List<string> excludedUANs = new List<string>();
+                if (isAge58Above)
+                {
+                    excludedUANs = GetExcludedUANs(path);
+                }
+
                 //check and remove empty row from DataTable when sometimes CSV mistakes empty cursor on a row as data
                 dt = ValidateAndFixDataTable(dt);
 
@@ -163,6 +170,9 @@ namespace BAL
                 {
                     int Wages = 0;
                     int EDLIWages = 0;
+                    int EPSWages = 0;
+                    bool isEPSDisqualified = false;
+
                     for (int i = 0; i < dt.Columns.Count; i++)
                     {
                         string temp = string.Empty;
@@ -173,7 +183,19 @@ namespace BAL
                         }
                         else if (i == 3 || i == 4) //wages2, wages3
                         {
-                            if (isHigherWageLimited)
+                            if (isAge58Above && isHigherWageLimited && excludedUANs.Contains(row[0].ToString()) && i == 4)
+                            {
+                                //future implementations
+                                //i=4 EPS is zero if pension is not there or age > 60
+                                temp = "0";
+                                isEPSDisqualified = true;
+                            }
+                            else if (isAge58Above && excludedUANs.Contains(row[0].ToString()) && i == 4)
+                            {
+                                temp = "0";
+                                isEPSDisqualified = true;
+                            }
+                            else if (isHigherWageLimited)
                             {
                                 temp = row[2].ToString();      //rename this to row["Column3"]
                                 Wages = Convert.ToInt32(temp) > 15000 ? 15000 : Convert.ToInt32(temp);
@@ -184,9 +206,6 @@ namespace BAL
                                 temp = row[2].ToString();
                                 Wages = Convert.ToInt32(temp);
                             }
-
-                            //future implementations
-                            //i=4 EPS is zero if pension is not there or age > 60
                         }
                         else if (i == 5) //EDLI Wages  //i=5 max EDLI amount is 15k
                         {
@@ -200,13 +219,28 @@ namespace BAL
                         }
                         else if (i == 7) //8.33%
                         {
-                            var calc = (int)Math.Round(EDLIWages * 8.33 / 100, 0);
-                            temp = calc.ToString();
+                            if (isEPSDisqualified)
+                            {
+                                temp = "0";
+                            }
+                            else
+                            {
+                                var calc = (int)Math.Round(EDLIWages * 8.33 / 100, 0);
+                                temp = calc.ToString();
+                            }
                         }
                         else if (i == 8) //3.67%
                         {
-                            var calc = (int)Math.Round((double)Wages * 12 / 100, 0) - (int)Math.Round((double)EDLIWages * 8.33 / 100, 0);
-                            temp = calc.ToString();
+                            if (isEPSDisqualified)
+                            {
+                                var calc = (int)Math.Round((double)Wages * 12 / 100, 0);
+                                temp = calc.ToString();
+                            }
+                            else
+                            {
+                                var calc = (int)Math.Round((double)Wages * 12 / 100, 0) - (int)Math.Round((double)EDLIWages * 8.33 / 100, 0);
+                                temp = calc.ToString();
+                            }
                         }
                         else if (i == 9)   //NCP days
                         {
@@ -233,6 +267,20 @@ namespace BAL
                 resultEx.AppendLine($"Server Error For developer: {ex.Message}");
                 return resultEx;
             }
+        }
+
+        private static List<string> GetExcludedUANs(string path)
+        {
+            string UAN_EPS_Excluded_File_Name =  "UAN_EPSExcluded";
+            string directory = Path.GetDirectoryName(path);
+            string UAN_EPS_ExcludedListPath = Path.Combine(directory, UAN_EPS_Excluded_File_Name);
+            List<string> excludedList = new List<string>();
+            
+            if (File.Exists(UAN_EPS_ExcludedListPath))
+            {
+                excludedList = File.ReadAllLines(UAN_EPS_ExcludedListPath).ToList();
+            }
+            return excludedList;
         }
 
         private static DataTable ValidateAndFixDataTable(DataTable dt)
