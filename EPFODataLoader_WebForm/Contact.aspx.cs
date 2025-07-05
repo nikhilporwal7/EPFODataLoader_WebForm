@@ -9,9 +9,11 @@ namespace EPFODataLoader_WebForm
     public partial class Contact : Page
     {
         bool isHigherWageLimited = false;
+        bool isAge58Above = false;
         protected void Page_Load(object sender, EventArgs e)
         {
             isHigherWageLimited = chkToggleHigherWages.Checked;
+            isAge58Above = chkToggleAge_58_Above.Checked;
         }
 
         protected void DownloadTxtData(System.Object sender, System.EventArgs e)
@@ -31,7 +33,7 @@ namespace EPFODataLoader_WebForm
                 dt = GetDT(path);
 
                 //set data in dataTable before passing in Utilities
-                var result2 = ExcelUtilities.ReadCSVFile(dt, isHigherWageLimited);
+                var result2 = ExcelUtilities.ReadCSVFile(dt, isHigherWageLimited, isAge58Above, path);
 
                 //DownloadTxt(fileName);
                 //var result = ExcelUtilities.DumpDBFToTxt(dt).ToString();

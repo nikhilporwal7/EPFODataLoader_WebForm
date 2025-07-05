@@ -6,6 +6,7 @@
    
     <div class="jumbotron" style="overflow: scroll">
         <asp:checkbox id="chkToggleHigherWages" type="checkbox" Text="Limit Wages to 15K" runat="server" />
+        <asp:checkbox id="chkToggleAge_58_Above" type="checkbox" Text="Fix EPS of Employees aged 58 and above" runat="server" />
         <h1>Upload CSV data</h1>
         
         <asp:FileUpload ID="CSVFileUpload_Id" runat="server" Width="138px" />
