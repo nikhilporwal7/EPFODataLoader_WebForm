@@ -185,7 +185,6 @@ namespace BAL
                         {
                             if (isAge58Above && isHigherWageLimited && excludedUANs.Contains(row[0].ToString()) && i == 4)
                             {
-                                //future implementations
                                 //i=4 EPS is zero if pension is not there or age > 60
                                 temp = "0";
                                 isEPSDisqualified = true;
