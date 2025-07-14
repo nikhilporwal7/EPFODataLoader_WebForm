@@ -37,7 +37,7 @@ namespace EPFODataLoader_WebForm
             string fileContent = File.ReadAllText(filePath);
 
             literalMsg.Text = fileContent.Replace(Environment.NewLine, "<br/>"); // Or Label1.Text
-            //literalMsg.Text = txtBoxInput.Text.Replace(Environment.NewLine, "<br/>"); 
+            txtBoxInput.Text = string.Empty;
         }
     }
 }
